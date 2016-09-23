@@ -1,4 +1,3 @@
-
 class Game extends React.Component {
   constructor(props){
     super(props);
@@ -8,6 +7,7 @@ class Game extends React.Component {
     this._unclick = this._unclick.bind(this);
     this._highScore = this._highScore.bind(this);
     this._checkHighScore = this._checkHighScore.bind(this);
+    this._dictionary = this._dictionary.bind(this);
   }
 
     _highScore(){
@@ -24,6 +24,11 @@ class Game extends React.Component {
           )
         })
         
+    }
+    _dictionary(input){
+      var dictionary = ['A','AA', 'AAH', 'AAHED', 'AAHING']; 
+      if (dictionary.indexOf(input) > -1) return true; 
+      else return false; 
     }
 
     _checkHighScore(){
@@ -93,29 +98,47 @@ class Game extends React.Component {
   }
 
   _submit(e){ 
-      this.state.submitArr.push([e.target.name])
-      this.state.canBeUnclickedID.push
-      if (e.target.name.length < 3) {
-        this.state.score += 0; 
+    var that = this; 
+    var wordCheck = $('#wordCheck'); 
+    var submitted = e.target.name; 
+    var submittedID = e.target.id; 
+      $.get("/dictionary.txt", function(data){
+        var words = data.split('\n');
+        if (words.indexOf(submitted) > -1){
+          wordCheck.text("Nice! " + submitted + " is a real word!").css({'color':'green', 'font-size': '35px', 'margin-left': '25px', 'font-weight':'bold', 'position': 'absolute', 'top':'80%', 'left': '50%'});
+          that.state.submitArr.push([submitted])
+          that.state.canBeUnclickedID.push([submittedID])
+          if (submitted.length < 3) {
+            that.state.score += 0; 
+          }
+          else if (submitted.length >= 3 && submitted.length < 5){
+            that.state.score += 1
+            console.log('score', that.state.score); 
+          }
+          else if (submitted.length === 5){
+            that.state.score += 2
+          }
+          else if (submitted.length === 6){
+            that.state.score += 3
+          }
+          else if (submitted.length === 7){
+            that.state.score += 5
+          }
+          else if (submitted.length > 7){
+            that.state.score += 11
+          }
+          that._checkHighScore(); 
+          that.setState({submitArr: that.state.submitArr, score: that.state.score, wordArr: [], canBeClicked: {}, color: {}, canBeUnclicked: [], canBeUnclickedID: []}); 
+        } 
+        else { 
+        wordCheck.text(submitted + " is not a real word, foo!").css({'color': 'red','font-size': '35px', 'margin-left': '25px', 'font-weight':'bold', 'position': 'absolute', 'top':'80%', 'left': '50%'});
+        that.setState({wordArr: [], canBeClicked: {}, color: {}, canBeUnclicked: [], canBeUnclickedID: []});
       }
-      else if (e.target.name.length >= 3 && e.target.name.length < 5){
-        this.state.score += 1
-        console.log('score', this.state.score); 
-      }
-      else if (e.target.name.length === 5){
-        this.state.score += 2
-      }
-      else if (e.target.name.length === 6){
-        this.state.score += 3
-      }
-      else if (e.target.name.length === 7){
-        this.state.score += 5
-      }
-      else if (e.target.name.length > 7){
-        this.state.score += 11
-      }
-      this._checkHighScore(); 
-      this.setState({submitArr: this.state.submitArr, score: this.state.score, wordArr: [], canBeClicked: {}, color: {}, canBeUnclicked: [], canBeUnclickedID: []}); 
+      }); 
+      // if (this._dictionary(e.target.name)) console.log(e.target.name, ' exists in dictionary'); 
+      // else console.log(e.target.name, ' does not exist in dictionary'); 
+     
+      
   }
 
 
@@ -127,7 +150,6 @@ class Game extends React.Component {
       // localStorage.setItem('highScores', JSON.stringify(winnerList)); 
         var savedData = localStorage.getItem('highScores'); 
       if (savedData){
-        console.log('got saved data!!!'); 
         winnerList = JSON.parse(savedData); 
       }
       const dieArray = ['aaafrs','aaeeee', 'aafirs','adennn','aeeeem','aeegmu','aegmnn','afirsy','bjkqxz','ccenst','ceiilt','ceilpt','ceipst','ddhnot','dhhlor','dhlnor','dhlnor','eiiitt','emottt','ensssu','fiprsy','gorrvw','iprrry','nootuw','ooottu']; 
