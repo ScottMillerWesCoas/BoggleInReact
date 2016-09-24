@@ -18,7 +18,7 @@ class Game extends React.Component {
         return dataTable.map((el, i) => {
           return(
             <div>
-            <Comment 
+            <HighScorers 
               name = {el.name}
               score = {el.score}
               key = {i}
@@ -188,18 +188,6 @@ class Game extends React.Component {
 }
 
 
-
- 
-
- class Comment extends React.Component {
-  render() {
-    return(
-      <div className='highScore'>
-        <span>{this.props.name} || {this.props.score}</span>
-      </div>
-    );
-  }
-}
 
   class WordBuild extends React.Component{
     render(){
