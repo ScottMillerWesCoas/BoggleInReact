@@ -1,3 +1,5 @@
+ var React = require('react'); 
+ 
  class HighScorers extends React.Component {
   render() {
     return(

@@ -1,3 +1,5 @@
+  var React = require('react'); 
+  
   class WordBuild extends React.Component{
     render(){
    
